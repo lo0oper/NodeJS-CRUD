@@ -2,13 +2,6 @@ const mysql = require('mysql2');
 require('dotenv').config();
 
 
-
-async function sleep(ms) {
-    return new Promise((resolve) => {
-      setTimeout(resolve, ms);
-    });
-  }
-
 var mysqlConnection = mysql.createConnection(
     {
         host:'mysql_server',
@@ -27,6 +20,9 @@ mysqlConnection.connect((err) => {
         return
 
     }
+    console.log(process.env.MYSQL_USERNAME)
+    console.log(process.env.JWT_SECRET_KEY)
+
     console.log('Connected to `NodeDB` database as id ' + mysqlConnection.threadId);
 });
 

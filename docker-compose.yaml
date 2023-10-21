@@ -2,8 +2,8 @@ version: '3'
 services:
   app:
     depends_on:
-      mysql_server:
-        condition: service_healthy
+      - mysql_server
+        # condition: service_healthy
     build:
       context: .
       dockerfile: Dockerfile
@@ -11,7 +11,7 @@ services:
       - MYSQL_DATABASE=mysql_server
       - MYSQL_PASSWORD=123456root
       - MYSQL_ROOT_PASSWORD=123456root
-      - MYSQL_USERNAME=root
+      - MYSQL_USER=root
       - JWT_SECRET_KEY=123456root
     ports:
       - 3000:3000
@@ -34,10 +34,6 @@ services:
       - MYSQL_DATABASE=mysql_server
       - MYSQL_PASSWORD=123456root
       - MYSQL_ROOT_PASSWORD=123456root
-      - MYSQL_USER=user
       - MYSQL_USERNAME=root
       - JWT_SECRET_KEY=123456root
-    healthcheck:
-      test: ["CMD", "-u", "root" ,"ping","-p","12345root" ,"-h", "localhost"]
-      timeout: 2s
-      retries: 5
+    
