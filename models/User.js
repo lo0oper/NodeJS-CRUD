@@ -1,15 +1,16 @@
 const dbConnection = require("../configs/dbConfiguration");
+const  {UndefinedError} = require('../errors/undefinedError');
 
 
 const User = function(user){
     this.username = user.username;
     this.email = user.email;
+    this.password = user.password;
     this.created_at = user.created_at;
     this.updated_at = user.updated_at;
 }
 
-
-User.create = (newUser, result) => {
+User.createUser = (newUser, result) => {
     // Check if a user with the same email or username already exists
     dbConnection.query('SELECT * FROM users WHERE email = ? OR username = ?', [newUser.email, newUser.username], (err, existingUsers) => {
       if (err) {
@@ -57,25 +58,31 @@ User.getById = (userId, res) => {
         console.error('An error occurred:',{err})
         res(err,null);
     }
+    console.log({results})
     if (results.length === 0) {
         res(null,{message:"User not found"})
-      
+        return 
     }
     res(null,results[0])
     return;
   });
 };
 
-
-
-User.update = (id,userData,body,res) => {
+User.update = (id,userData,res) => {
   const user_id = id
+
+  if(userData.password==undefined || userData.email==undefined){
+    const err = new UndefinedError('Password is missing');
+    console.error({ errorMessage: 'Password is undefined:'});
+    res(err, null);
+    return 
+  }
   const updatedUser = new User({
-    username:body.username,
-    email:body.email,
+    username:userData.username,
+    email:userData.email,
+    password: userData.password,
     updated_at: new Date(),
-    created_at: userData.created_at,
-    password:userData.password,
+    created_at: userData.created_at
   })
   dbConnection.query('UPDATE users SET ? WHERE user_id = ?', [updatedUser, user_id], (err, results) => {
     if (err) {
@@ -86,6 +93,24 @@ User.update = (id,userData,body,res) => {
     return
   });
 };
+
+User.patch = (id,userData,res) => {
+    try{
+        const user_id = id
+        dbConnection.query('UPDATE users SET ?  WHERE user_id = ?', [userData, user_id], (err, results) => {
+            if (err) {
+                console.error({errorMessage: 'An error occurred while updating user:',user_id,err});
+                res(err,null) 
+            }
+            res(null,{ message: 'User updated successfully',...userData})  
+        });
+    }catch (e) {
+        console.error({ errorMessage: 'An error occurred:', e });
+        res(e, null); // Return the error and exit the function
+        
+    }
+    return 
+  };
 
 User.delete = (id,userData,res) => {
   const user_id = id;
