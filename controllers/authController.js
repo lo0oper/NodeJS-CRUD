@@ -1,13 +1,13 @@
 
 const jwt = require('jsonwebtoken');
-const UserModel = require('../models/User');
+const {User} = require('../models/User');
 
 
 
 
 const login = async (req, res) => {
     const { username, password } = req.body;
-    UserModel.login(username,password,(err,data)=>{
+    User.login(username,password,(err,data)=>{
       if (err) {
         console.error('Error while logging in', err);
         res.status(500).json({ error: 'User registration failed' });

@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 
-
 const User = function(user){
     this.username = user.username;
     this.email = user.email;
@@ -158,4 +157,4 @@ User.login = (username,password,res) =>{
     });
 }
 
-module.exports = User;
+module.exports = {User};

@@ -4,8 +4,6 @@ const userController = require('../controllers/userController');
 const {auth} = require("../middlewares/authMiddleware")
 
 
-
-
 router.get('/', userController.getAllUsers);
 router.get('/:id',auth, userController.getUserById);
 router.put('/:id',auth,userController.updateUser);

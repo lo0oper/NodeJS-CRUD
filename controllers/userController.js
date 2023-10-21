@@ -1,8 +1,6 @@
 
-const UserModel = require('../models/User');
-const  {UndefinedError} = require('../errors/undefinedError');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt'); // for password hashing
+const {User} = require('../models/User');
+const {UndefinedError} = require('../errors/undefinedError');
 const {hashPassword} = require('../middlewares/passwordMiddlewares')
 
 // Register a new user
@@ -14,7 +12,7 @@ const registerUser = async (req, res) => {
     }
     const hashedPassword = await hashPassword(req.body.password);
     console.log({hashedPassword})
-    const newUser = new UserModel({
+    const newUser = new User({
         username :req.body.username,
         email : req.body.email,
         password: hashedPassword,
@@ -23,7 +21,7 @@ const registerUser = async (req, res) => {
     });
 
 
-  UserModel.createUser(newUser, (err, data) => {
+  User.createUser(newUser, (err, data) => {
     if (err) {
       console.error('Error registering user:', err);
       res.status(500).json({ error: 'User registration failed' });
@@ -36,7 +34,7 @@ const registerUser = async (req, res) => {
 
 const getAllUsers = async (req,res) => {
     const title = req.query.title;
-    UserModel.getAll((err,data)=> {
+    User.getAll((err,data)=> {
         if (err) {
             console.error('Error fetching all users:',err);
             res.status(500).json({error:"Internal server error"});
@@ -49,7 +47,7 @@ const getAllUsers = async (req,res) => {
 
 const getUserById = async (req, res) => {
     const id = req.params.id;
-    UserModel.getById(id,(err,data)=> {
+    User.getById(id,(err,data)=> {
         if (err) {
             console.error('Error fetching all users:',err);
             res.status(500).json({error:"Internal server error"});
@@ -61,12 +59,12 @@ const getUserById = async (req, res) => {
 
 const updateUser = async (req, res) => {
     const id = req.params.id
-    const body = req.body
+    let body = req.body
     if(body.password){
-        body.password = await hashPassword(plainPassword);
+        body.password = await hashPassword(body.password);
     }
     try{
-        UserModel.update(id,body,(err,updatedUserData)=>{
+        User.update(id,body,(err,updatedUserData)=>{
             if(err){
                 if (err instanceof UndefinedError) {
                     return res.status(400).json({ error: 'Password and Email must be present' });
@@ -90,7 +88,7 @@ const patchUser = async (req,res) =>{
         body.password = await hashPassword(plainPassword);
     }
     try{
-        UserModel.patch(id,body,(err,data)=>{
+        User.patch(id,body,(err,data)=>{
             if(err){
                 console.error('Error occured while updating the user:',id,err)
                 res.status(500).json({error:"Internal server error"});
@@ -107,7 +105,7 @@ const patchUser = async (req,res) =>{
 const deleteUser = async (req, res) => {
     const id = req.params.id;
     try {
-        UserModel.getById(id, (err, userData) => {
+        User.getById(id, (err, userData) => {
             if (err) {
               console.error('An error occurred:', err);
               return res.status(500).json({ error: 'Internal server error' });
@@ -118,7 +116,7 @@ const deleteUser = async (req, res) => {
               return res.status(204).json({ message: 'User did not exist.' });
             }
         
-            UserModel.delete(id,userData, (err) => {
+            User.delete(id,userData, (err) => {
               if (err) {
                 console.error('An error occurred:', err);
                 return res.status(500).json({ error: 'Internal server error' });
