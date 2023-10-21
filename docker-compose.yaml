@@ -2,22 +2,22 @@ version: '3'
 services:
   app:
     depends_on:
-      - mysql_server
+      mysql_server:
+        condition: service_healthy
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      - MYSQL_DATABASE=mysql_server
+      - MYSQL_PASSWORD=123456root
+      - MYSQL_ROOT_PASSWORD=123456root
+      - MYSQL_USERNAME=root
+      - JWT_SECRET_KEY=123456root
     ports:
       - 3000:3000
     volumes:
       - .:/app
       - '/app/node_modules'
-    environment:
-      - MYSQL_DATABASE:mysql_server
-      - MYSQL_PASSWORD:123456root
-      - MYSQL_ROOT_PASSWORD:123456root
-      - JWT_SECRET_KEY:123456root
-      - MYSQL_USERNAME=root
-
       
   
   mysql_server:
@@ -26,16 +26,18 @@ services:
     restart: always
     ports:
       - "3306:3306"
+    expose:
+      - "3306"
+    # volumes:
+    #   - mysql-data:/var/lib/mysql
     environment:
       - MYSQL_DATABASE=mysql_server
       - MYSQL_PASSWORD=123456root
       - MYSQL_ROOT_PASSWORD=123456root
-      - JWT_SECRET_KEY=123456root
+      - MYSQL_USER=user
       - MYSQL_USERNAME=root
-    # command: --bind-address=127.0.0.1
-    expose:
-      - "3306"
+      - JWT_SECRET_KEY=123456root
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      timeout: 20s
-      retries: 10
+      test: ["CMD", "-u", "root" ,"ping","-p","12345root" ,"-h", "localhost"]
+      timeout: 2s
+      retries: 5
