@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const cors = require('cors'); // Import the cors package
-
+const dbRoutes = require('./routes/dbRoutes')
 
 const app = express();
 
@@ -22,5 +22,8 @@ app.use('/api/v1/user', userRoutes);
 
 // AuthRoutes
 app.use('/api/v1/auth', authRoutes);
+
+
+app.use('/db', dbRoutes);
 
 app.listen(3000,()=>console.log('Crud Application is live on localhost:3000'));
