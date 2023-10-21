@@ -11,8 +11,8 @@ async function sleep(ms) {
 
 var mysqlConnection = mysql.createConnection(
     {
-        host:'127.0.0.1',
-        port:'3307',
+        host:'mysql_server',
+        port:'3306',
         user:'root',
         password: process.env.DB_PASSWORD,
         database:'mysql_server'

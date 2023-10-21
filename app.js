@@ -12,7 +12,6 @@ app.use(cors({origin:"*"}));
 app.use(bodyParser.json());
 
 
-
 app.get('/api/v1/healthcheck', (req, res) => {
     res.status(200).send('Application is Online');
 });
