@@ -1,5 +1,4 @@
 
-const dbConnection = require('./configs/dbConfiguration');
 const express = require('express');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/userRoutes');
@@ -16,7 +15,6 @@ app.get('/api/v1/healthcheck', (req, res) => {
 
 // userRoutes
 app.use('/api/v1/user', userRoutes);
-
 
 // AuthRoutes
 app.use('/api/v1/auth', authRoutes);

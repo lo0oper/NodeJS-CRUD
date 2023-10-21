@@ -1,5 +1,8 @@
 const dbConnection = require("../configs/dbConfiguration");
 const  {UndefinedError} = require('../errors/undefinedError');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
 
 
 const User = function(user){
@@ -52,8 +55,8 @@ User.getAll = (res) => {
 };
 
 User.getById = (userId, res) => {
-  const user_id = userId
-  dbConnection.query('SELECT * FROM users WHERE user_id = ?', [user_id], (err, results) => {
+    console.log("SEARCHIBG FOR ",userId)
+  dbConnection.query('SELECT * FROM users WHERE user_id = ?', [userId], (err, results) => {
     if (err) {
         console.error('An error occurred:',{err})
         res(err,null);
@@ -123,5 +126,36 @@ User.delete = (id,userData,res) => {
     return 
   });
 };
+
+
+User.login = (username,password,res) =>{
+    dbConnection.query('SELECT * FROM users WHERE username = ?', [username], (err, results) => {
+        if (err) {
+            console.error({errorMessage: 'Internal error occured while logging in ',err});
+            res(err,null);
+        } else if (results.length === 0) {
+            console.log('No user exists with given details');
+            res(new Error("No user found with given details"),null);
+        } else {
+            const user = results[0];
+            // Compare the hashed password
+            bcrypt.compare(password, user.password, (err, isMatch) => {
+                if (err) {
+                    console.error({errorMessage: 'An error occurred comparing passswords ',err});
+                    res(new Error("Internal server Error"),null);
+                } else if (isMatch) {
+                    console.log("User found, generating token for it")
+                    // Generate a JWT
+                    const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+                    res(null,{token:token,...user})
+                } else {
+                    console.log('UnAuthenticated user');
+                    res(null,{"message":"UnAuthenticated request",...user})
+                }
+            });
+            return 
+        }
+    });
+}
 
 module.exports = User;

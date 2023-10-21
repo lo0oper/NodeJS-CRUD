@@ -1,20 +1,23 @@
 
-const User = require('../models/User');
 const UserModel = require('../models/User');
 const  {UndefinedError} = require('../errors/undefinedError');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt'); // for password hashing
+const {hashPassword} = require('../middlewares/passwordMiddlewares')
 
 // Register a new user
-const registerUser = (req, res) => {
+const registerUser = async (req, res) => {
     if (!req.body) {
         res.status(400).send({
           message: "Content can not be empty!"
         });
     }
-
+    const hashedPassword = await hashPassword(req.body.password);
+    console.log({hashedPassword})
     const newUser = new UserModel({
         username :req.body.username,
         email : req.body.email,
-        password: req.body.password,
+        password: hashedPassword,
         created_at : new Date(),
         updated_at : new Date()
     });
@@ -59,6 +62,9 @@ const getUserById = async (req, res) => {
 const updateUser = async (req, res) => {
     const id = req.params.id
     const body = req.body
+    if(body.password){
+        body.password = await hashPassword(plainPassword);
+    }
     try{
         UserModel.update(id,body,(err,updatedUserData)=>{
             if(err){
@@ -80,6 +86,9 @@ const updateUser = async (req, res) => {
 const patchUser = async (req,res) =>{
     id = req.params.id;
     body = req.body;
+    if(body.password){
+        body.password = await hashPassword(plainPassword);
+    }
     try{
         UserModel.patch(id,body,(err,data)=>{
             if(err){
