@@ -11,6 +11,13 @@ services:
     volumes:
       - .:/app
       - '/app/node_modules'
+    environment:
+      - MYSQL_DATABASE:mysql_server
+      - MYSQL_PASSWORD:123456root
+      - MYSQL_ROOT_PASSWORD:123456root
+      - JWT_SECRET_KEY:123456root
+      - MYSQL_USERNAME=root
+
       
   
   mysql_server:
@@ -23,9 +30,9 @@ services:
       - MYSQL_DATABASE=mysql_server
       - MYSQL_PASSWORD=123456root
       - MYSQL_ROOT_PASSWORD=123456root
-      - MYSQL_USERNAME=root
       - JWT_SECRET_KEY=123456root
-    command: --bind-address=127.0.0.1
+      - MYSQL_USERNAME=root
+    # command: --bind-address=127.0.0.1
     expose:
       - "3306"
     healthcheck:
