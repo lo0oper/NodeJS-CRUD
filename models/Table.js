@@ -5,7 +5,7 @@ const Table = function(table){
 }
 
 Table.createTable = (tableName,res)=>{
-    const createTableQuery =`CREATE TABLE \`buyers\` (
+    const createTableQuery =`CREATE TABLE \`${tableName}\` (
         user_id INT AUTO_INCREMENT PRIMARY KEY,
         username VARCHAR(50) NOT NULL,
         email VARCHAR(100) UNIQUE NOT NULL,

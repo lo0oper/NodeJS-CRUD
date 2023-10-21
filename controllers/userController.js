@@ -5,6 +5,7 @@ const {hashPassword} = require('../middlewares/passwordMiddlewares')
 
 // Register a new user
 const registerUser = async (req, res) => {
+    console.log("Register User invoked")
     if (!req.body) {
         res.status(400).send({
           message: "Content can not be empty!"
@@ -33,6 +34,7 @@ const registerUser = async (req, res) => {
 
 
 const getAllUsers = async (req,res) => {
+    console.log("Get all User invoked")
     const title = req.query.title;
     User.getAll((err,data)=> {
         if (err) {
@@ -46,6 +48,7 @@ const getAllUsers = async (req,res) => {
 };
 
 const getUserById = async (req, res) => {
+    console.log("User by Id invoked")
     const id = req.params.id;
     User.getById(id,(err,data)=> {
         if (err) {
@@ -58,6 +61,7 @@ const getUserById = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
+    console.log("Update User invoked")
     const id = req.params.id
     let body = req.body
     if(body.password){
@@ -82,6 +86,7 @@ const updateUser = async (req, res) => {
 };
 
 const patchUser = async (req,res) =>{
+    console.log("Patch User invoked")
     id = req.params.id;
     body = req.body;
     if(body.password){
@@ -103,6 +108,7 @@ const patchUser = async (req,res) =>{
 }
 
 const deleteUser = async (req, res) => {
+    console.log("Delete User invoked")
     const id = req.params.id;
     try {
         User.getById(id, (err, userData) => {

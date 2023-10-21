@@ -2,6 +2,7 @@
 const {Table} = require("../models/Table")
 
 const createTable = (req,res)=>{
+    console.log("Create Table invoked")
     const tableName = req.body.tableName
     Table.createTable(tableName,(err,data)=>{
         if (err) {

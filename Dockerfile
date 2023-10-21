@@ -13,11 +13,12 @@ RUN npm install
 # Copy the rest of project files into this image
 COPY . .
 
-RUN ls
-
-RUN ls ./errors
 # Expose application port
 EXPOSE 3000
 
+
+VOLUME [ "/app/node_modules" ]
+
+RUN ls
 # Start the application
 CMD npm start

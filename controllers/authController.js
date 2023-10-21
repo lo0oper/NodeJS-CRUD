@@ -5,6 +5,7 @@ const {User} = require('../models/User');
 
 
 const login = async (req, res) => {
+    console.log("Login User invoked")
     const { username, password } = req.body;
     User.login(username,password,(err,data)=>{
       if (err) {

@@ -1,20 +1,30 @@
-services: 
-  app:
-    build: 
-      context: .
-      dockerfile: Dockerfile
-    ports: 
-      - 3000:3000
-    volumes: 
-      - .:/app
-      - '/app/node_modules'
-    depends_on: 
-      - mysql_server
+version: '3'
+services:
+  # app:
+  #   depends_on:
+  #     mysql_server:
+  #       condition: service_healthy
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - 3000:3000
+  #   volumes:
+  #     - .:/app
+  #     - '/app/node_modules'
   
   mysql_server:
-    image: mysql:8.0
-    environment: 
-      - MYSQL_DATABASE=test_db
-      - MYSQL_USER=dan
-      - MYSQL_PASSWORD=secret
-      - MYSQL_ROOT_PASSWORD=secret
+    image: mysql:8.1.0
+    hostname: mysql
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_DATABASE=mysql_server
+      - MYSQL_PASSWORD=123456root
+      - MYSQL_ROOT_PASSWORD=123456root
+      - MYSQL_USERNAME=root
+      - JWT_SECRET_KEY=123456root
+    # command: --bind-address=127.0.0.1
+    healthcheck:
+      test: "mysql mysql_server E -u root -p 123456root -e 'SELECT 1;'"
