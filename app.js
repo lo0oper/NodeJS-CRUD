@@ -3,8 +3,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
+const cors = require('cors'); // Import the cors package
+
 
 const app = express();
+
+app.use(cors({origin:"*"}));
 app.use(bodyParser.json());
 
 
